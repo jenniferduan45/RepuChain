@@ -1,0 +1,43 @@
+version: '3.8'
+# 命令执行 docker-compose -f docker-compose-app.yml up -d
+services:
+  repuchain-app:
+    image: 
+    container_name: 
+    restart: always
+    ports:
+      - "8091:8091"
+    environment:
+      - TZ=America/New_York
+      - SERVER_PORT=8091
+      - APP_CONFIG_API_VERSION=v1
+      - APP_CONFIG_CROSS_ORIGIN=*
+    volumes:
+      - ./log:/data/log
+    networks:
+      - my-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+  repuchain-front-app:
+    container_name: 
+    image: 
+    restart: always
+    networks:
+      - my-network
+    ports:
+      - 3000:3000
+    environment:
+      - API_HOST_URL=http://127.0.0.1:8091
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://0.0.0.0:3000/" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+networks:
+  my-network:
+    driver: bridge
