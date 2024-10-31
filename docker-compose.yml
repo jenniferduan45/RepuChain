@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  repuchain-app-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+    container_name: repuchain-container-backend
+    restart: unless-stopped
+    command: npm start
+
+  repuchain-app-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    container_name: repuchain-container-frontend
+    restart: unless-stopped
+    command: npm start
