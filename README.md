@@ -52,4 +52,8 @@ npm start
 ```
 The frontend will run on `http://localhost:3000`.
 
+## Run the project in docker
+sudo docker-compose up --build (if this is your first time run it)
+sudo docker-compose up(if you have already built)
+
 ## Deployment
