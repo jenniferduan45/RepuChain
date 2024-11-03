@@ -1,18 +1,28 @@
-version: '3.8'
-
+version: '3.9'
 services:
+  # Backend Service
   repuchain-app-backend:
     build:
       context: .
       dockerfile: Dockerfile-backend
+    container_name: repuchain-container-backend
     ports:
-      - "3001:3001"
+      - "3001:3001"  # Expose backend on port 3001
+    networks:
+      - my-network
+    depends_on:
+      - mysql  # Ensure backend starts after MySQL is ready
     environment:
       - NODE_ENV=production
-    container_name: repuchain-container-backend
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=123456
+      - DB_NAME=repuchain  # Example database name
     restart: unless-stopped
     command: npm start
 
+  # Frontend Service
   repuchain-app-frontend:
     build:
       context: .
@@ -24,3 +34,45 @@ services:
     container_name: repuchain-container-frontend
     restart: unless-stopped
     command: npm start
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0.32
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: repuchain  # Example database name
+    networks:
+      - my-network
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 15s
+
+  # phpMyAdmin for Database Management
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    container_name: phpmyadmin
+    ports:
+      - "8899:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: 123456
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

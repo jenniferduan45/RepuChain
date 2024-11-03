@@ -12,6 +12,8 @@ COPY . /RepuChain
 # Install Truffle globally
 RUN npm install -g truffle
 
+RUN npm install express jsonwebtoken ethers
+
 # Set working directory to backend folder
 WORKDIR /RepuChain/backend
 
