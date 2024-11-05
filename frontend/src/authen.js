@@ -9,7 +9,7 @@ export async function connectMetaMask() {
     const accounts = await web3.eth.getAccounts();
     return accounts[0];
   } else {
-    throw new Error('MetaMask not detected');
+    throw new Error('MetaMask not detected, add it as your browser extension.');
   }
 }
 
