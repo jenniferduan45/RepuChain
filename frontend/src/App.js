@@ -1,54 +1,42 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
-import Web3 from 'web3';
 import './App.css';
-import { connectMetaMask, authenticate } from './authen';
+import Login from './Login';
 
 function App() {
   const [account, setAccount] = useState(null);
-  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    if (window.ethereum) {
-      const web3 = new Web3(window.ethereum);
-      window.ethereum.enable().then(accounts => {
-        setAccount(accounts[0]);
-      });
-    } else {
-      alert('MetaMask not detected');
+    // Check if user is already logged in
+    const storedAccount = localStorage.getItem('account');
+    if (storedAccount) {
+      setAccount(storedAccount);
     }
   }, []);
 
-  const handleLogin = async () => {
-    try {
-      const userAccount = await connectMetaMask();
-      setAccount(userAccount);
-
-      const jwtToken = await authenticate(userAccount);
-      setToken(jwtToken);
-
-      if (jwtToken) {
-        localStorage.setItem('token', jwtToken); // Store token for future use
-        alert('Login successful!');
-      } else {
-        alert('Login failed.');
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      alert(error.message);
-    }
+  const handleLoginSuccess = (userAccount) => {
+    setAccount(userAccount);
   };
 
+  const handleLogout = () => {
+    setAccount(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('account');
+  };
+
+  if (!account) {
+    // User is not logged in, show the Login page
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <div className="App">
       <header>
         <h1>RepuChain - Decentralized Credential System</h1>
-        {account ? (
-          <p>Connected account: {account}</p>
-        ) : (
-          <button onClick={handleLogin}>Connect with MetaMask</button>
-        )}
+        <p>Connected account: {account}</p>
+        <button onClick={handleLogout}>Logout</button>
       </header>
+      {/* Include other components or routes for your app here */}
     </div>
   );
 }
