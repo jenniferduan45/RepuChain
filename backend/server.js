@@ -3,33 +3,36 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const ethers = require('ethers');
-const cors = require('cors'); // Import cors
+const cors = require('cors');
+const mysql = require('mysql2/promise'); // Import mysql2/promise
+require('dotenv').config(); // Load environment variables
 
 const app = express();
 const PORT = 3001;
-const JWT_SECRET = 'your_jwt_secret'; // change later
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
-// Remove or comment out MySQL code since it's not being used
-// const mysql = require('mysql2/promise');
-// const connection = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   port: process.env.DB_PORT
-// });
-// module.exports = connection;
+// Database connection pool
+const dbPool = mysql.createPool({
+  host: process.env.DB_HOST || 'mysql',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '123456',
+  database: process.env.DB_NAME || 'repuchain',
+  port: process.env.DB_PORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes
-app.use(express.json()); // Parse JSON bodies
+app.use(cors());
+app.use(express.json());
 
 // Root route
 app.get('/', (req, res) => {
   res.send('RepuChain Backend');
 });
 
-// POST /auth/login - Verifies wallet signature and returns JWT
+// POST /auth/login - Verifies wallet signature and handles user record
 app.post('/auth/login', async (req, res) => {
   const { address, signature } = req.body;
 
@@ -45,8 +48,29 @@ app.post('/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid signature.' });
     }
 
-    // Skip database operations
-    // Directly generate JWT token
+    // Check if the user exists in the database
+    const [rows] = await dbPool.query(
+      'SELECT * FROM Users WHERE wallet_address = ?',
+      [address]
+    );
+
+    if (rows.length === 0) {
+      // User does not exist, create a new user
+      await dbPool.query(
+        'INSERT INTO Users (wallet_address, update_time) VALUES (?, NOW())',
+        [address]
+      );
+      console.log(`New user created with address: ${address}`);
+    } else {
+      // User exists, update the update_time
+      await dbPool.query(
+        'UPDATE Users SET update_time = NOW() WHERE wallet_address = ?',
+        [address]
+      );
+      console.log(`Existing user updated with address: ${address}`);
+    }
+
+    // Generate JWT token
     const token = jwt.sign({ address }, JWT_SECRET, { expiresIn: '1h' });
 
     // Return the token to the client
@@ -56,9 +80,6 @@ app.post('/auth/login', async (req, res) => {
     return res.status(500).json({ error: 'Authentication failed.' });
   }
 });
-
-// Handle preflight OPTIONS requests for all routes
-app.options('*', cors());
 
 // Start server
 app.listen(PORT, () => {

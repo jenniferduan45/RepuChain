@@ -1,28 +1,20 @@
-# Use the latest AlmaLinux image
-FROM almalinux:latest
+# Use the official Node.js LTS version
+FROM node:16
 
-# Install Git and Node.js
-RUN dnf -y update && \
-    dnf -y install git nodejs
+# Set working directory
+WORKDIR /app
 
-COPY . /RepuChain
-# Clone the repository
-#RUN git clone https://github.com/jenniferduan45/RepuChain.git
+# Copy package.json and package-lock.json
+COPY backend/package*.json ./
 
-# Install Truffle globally
-RUN npm install -g truffle
-
-RUN npm install express jsonwebtoken ethers
-
-# Set working directory to backend folder
-WORKDIR /RepuChain/backend
-
-# Install project dependencies
+# Install app dependencies
 RUN npm install
+
+# Copy the rest of the backend code
+COPY backend/ .
 
 # Expose port 3001
 EXPOSE 3001
 
 # Start the application
 CMD ["npm", "start"]
-

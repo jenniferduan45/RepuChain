@@ -3,10 +3,10 @@ USE repuchain;
 
 -- Users Table
 CREATE TABLE Users (
-    user_id INT PRIMARY KEY,
-    password VARCHAR(64) NOT NULL,
-    email VARCHAR(32) NOT NULL,
-    wallet_address VARCHAR(42),
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    password VARCHAR(64),
+    email VARCHAR(32),
+    wallet_address VARCHAR(42) UNIQUE,
     role VARCHAR(20),
     created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

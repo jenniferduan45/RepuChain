@@ -3,7 +3,7 @@ FROM almalinux:latest
 
 # Install Git and Node.js
 RUN dnf -y update && \
-    dnf -y install git nodejs
+    dnf -y install git nodejs make gcc-c++
 
 COPY . /RepuChain
 # Clone the repository
