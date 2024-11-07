@@ -18,8 +18,15 @@ RepuChain/
 ├── contracts/                   # Solidity contracts
 │   └── RepuChain.sol            
 ├── migrations/                  # Migration scripts for Truffle
-├── truffle-config.js            # Truffle configuration for smart contracts                   
-└── README.md
+├── node_modules/                # Node.js modules
+├── mysql/                       # MySQL configurations or data
+├── docker-compose.yml           # Docker Compose configuration
+├── truffle-config.js            # Truffle configuration for smart contracts
+├── package.json                 # Project dependencies
+├── package-lock.json            # Locked versions of project dependencies
+├── README.md                    # Project documentation
+├── Dockerfile-frontend          # Dockerfile for frontend
+└── Dockerfile-backend           # Dockerfile for backend
 ```
 
 ## Install Dependencies
