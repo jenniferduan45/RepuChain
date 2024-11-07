@@ -51,11 +51,11 @@ function IssueCredential({ account }) {
   };
 
   return (
-    <div className="app-container">
+    <div className="profile-container">
       <h2>Issue Credential</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Owner Address:</label>
+      <form onSubmit={handleSubmit} className="profile-edit-form">
+        <div className="form-group">
+          <label>Owner Wallet Address:</label>
           <input
             type="text"
             value={owner}
@@ -63,7 +63,7 @@ function IssueCredential({ account }) {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Credential Type:</label>
           <input
             type="text"
@@ -72,7 +72,7 @@ function IssueCredential({ account }) {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Description:</label>
           <textarea
             value={description}
@@ -80,8 +80,10 @@ function IssueCredential({ account }) {
             required
           />
         </div>
-        <button onClick={handleSubmit}>Issue Credential</button>
-        <button onClick={handleBackToHome}>Back To Home</button>
+        <div className="button-group">
+          <button onClick={handleSubmit} className="save-button">Issue Credential</button>
+          <button onClick={handleBackToHome} className="cancel-button">Back To Home</button>
+        </div>
       </form>
     </div>
   );

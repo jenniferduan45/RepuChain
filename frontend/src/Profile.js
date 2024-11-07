@@ -1,5 +1,6 @@
 // src/Profile.js
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Profile({ handleLogout }) {
   const [userInfo, setUserInfo] = useState({
@@ -17,6 +18,7 @@ function Profile({ handleLogout }) {
     role: '',
   });
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const apiUrl = `${process.env.REACT_APP_API_URL}/user/profile`;
@@ -76,6 +78,10 @@ function Profile({ handleLogout }) {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleBackToHome = () => {
+    navigate('/');
   };
 
   const handleSubmit = (e) => {
@@ -181,7 +187,7 @@ function Profile({ handleLogout }) {
           </div>
           <div className="button-group">
             <button onClick={handleEditToggle} className="edit-button">Edit Profile</button>
-            <button onClick={handleLogout} className="logout-button">Logout</button>
+            <button type="button" onClick={handleBackToHome} className="cancel-button">Back To Home</button>
           </div>
         </div>
       ) : (

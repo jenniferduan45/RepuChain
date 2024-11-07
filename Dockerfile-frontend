@@ -1,11 +1,17 @@
 # Use the official Node.js LTS version
 FROM node:16
 
+# Declare build-time variable
+ARG REACT_APP_API_URL
+
 # Set working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY frontend/package*.json ./
+
+# Set environment variable for build time
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
 # Install app dependencies
 RUN npm install

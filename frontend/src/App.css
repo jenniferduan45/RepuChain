@@ -35,6 +35,12 @@ body {
   color: #202124;
 }
 
+/* Home Page */
+.title {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
 /* Profile Container */
 .profile-container {
   max-width: 600px;
@@ -143,6 +149,7 @@ body {
 }
 
 .form-group input,
+.form-group textarea,
 .form-group select {
   width: 100%;
   padding: 10px 12px;
@@ -150,6 +157,7 @@ body {
   border-radius: 4px;
   font-size: 1rem;
   color: #202124;
+  font-family: 'Arial', sans-serif;
 }
 
 .form-group input:focus,
