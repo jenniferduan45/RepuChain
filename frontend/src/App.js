@@ -4,6 +4,7 @@ import './App.css';
 import Login from './Login';
 import Profile from './Profile'; // Import the Profile component
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import IssueCredential from './components/IssueCredential';
 
 function App() {
   const [account, setAccount] = useState(null);
@@ -56,6 +57,9 @@ function App() {
             )}
           </Route>
           {/* Add other routes here */}
+          <Route path="/issue-credential">
+            <IssueCredential account={account} />
+          </Route>
         </Switch>
       </div>
     </Router>
