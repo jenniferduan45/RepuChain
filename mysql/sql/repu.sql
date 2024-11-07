@@ -6,6 +6,7 @@ CREATE TABLE Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     password VARCHAR(64),
     email VARCHAR(32),
+    username VARCHAR(50),
     wallet_address VARCHAR(42) UNIQUE,
     role VARCHAR(20),
     created_time DATETIME DEFAULT CURRENT_TIMESTAMP,

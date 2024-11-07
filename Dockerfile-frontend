@@ -1,6 +1,9 @@
 # Use the latest AlmaLinux image
 FROM almalinux:latest
 
+# Declare build-time variable
+ARG REACT_APP_API_URL
+
 # Install Git and Node.js
 RUN dnf -y update && \
     dnf -y install git nodejs make gcc-c++
@@ -14,6 +17,9 @@ RUN npm install -g truffle
 
 # Set working directory to backend folder
 WORKDIR /RepuChain/frontend
+
+# Set environment variable for build time
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
 # Install project dependencies
 RUN npm install

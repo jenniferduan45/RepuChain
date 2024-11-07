@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Login from './Login';
+import Profile from './Profile'; // Import the Profile component
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 function App() {
   const [account, setAccount] = useState(null);
@@ -16,28 +18,47 @@ function App() {
 
   const handleLoginSuccess = (userAccount) => {
     setAccount(userAccount);
+    localStorage.setItem('account', userAccount); // Ensure account is stored
   };
 
   const handleLogout = () => {
     setAccount(null);
     localStorage.removeItem('token');
     localStorage.removeItem('account');
+    window.location.href = '/'; // Redirect to login page
   };
 
-  if (!account) {
-    // User is not logged in, show the Login page
-    return <Login onLoginSuccess={handleLoginSuccess} />;
-  }
-
   return (
-    <div className="App">
-      <header>
-        <h1>RepuChain - Decentralized Credential System</h1>
-        <p>Connected account: {account}</p>
-        <button onClick={handleLogout}>Logout</button>
-      </header>
-      {/* Include other components or routes for your app here */}
-    </div>
+    <Router>
+      <div className="App">
+        {/* Navbar */}
+        <nav className="navbar">
+          <div className="navbar-brand">
+            RepuChain - Decentralized Credential System
+          </div>
+          {/* Removed the connected account display */}
+        </nav>
+
+        {/* Main Content */}
+        <Switch>
+          <Route exact path="/">
+            {!account ? (
+              <Login onLoginSuccess={handleLoginSuccess} />
+            ) : (
+              <Redirect to="/profile" />
+            )}
+          </Route>
+          <Route path="/profile">
+            {!account ? (
+              <Redirect to="/" />
+            ) : (
+              <Profile handleLogout={handleLogout} /> 
+            )}
+          </Route>
+          {/* Add other routes here */}
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
