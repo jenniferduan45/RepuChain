@@ -31,6 +31,8 @@ services:
         REACT_APP_API_URL: http://localhost:3001
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app
     environment:
       - NODE_ENV=production
     container_name: repuchain-container-frontend

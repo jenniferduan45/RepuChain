@@ -1,12 +1,14 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import './App.css';
 import Login from './Login';
-import Profile from './Profile'; // Import the Profile component
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import Profile from './Profile';
+import IssueCredential from './components/IssueCredential';
 
 function App() {
   const [account, setAccount] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is already logged in
@@ -28,37 +30,71 @@ function App() {
     window.location.href = '/'; // Redirect to login page
   };
 
-  return (
-    <Router>
-      <div className="App">
-        {/* Navbar */}
-        <nav className="navbar">
-          <div className="navbar-brand">
-            RepuChain - Decentralized Credential System
-          </div>
-          {/* Removed the connected account display */}
-        </nav>
+  const navigateToIssueCredential = () => {
+    navigate('/issue-credential');
+  };
 
-        {/* Main Content */}
-        <Switch>
-          <Route exact path="/">
-            {!account ? (
+  const navigateToProfile = () => {
+    navigate('/profile');
+  };
+
+  return (
+    <div className="App">
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="navbar-brand">
+          RepuChain
+          {account && <button onClick={handleLogout} className="logout-button">Logout</button>}
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            !account ? (
               <Login onLoginSuccess={handleLoginSuccess} />
             ) : (
-              <Redirect to="/profile" />
-            )}
-          </Route>
-          <Route path="/profile">
-            {!account ? (
-              <Redirect to="/" />
+              <div className="profile-container">
+                <div className="title">
+                  <h2>Welcome to RepuChain</h2>
+                  <h3>Blockchain Verified Credentials You Can Trust</h3>
+                </div>
+                <div classname="button-group">
+                  <button onClick={navigateToIssueCredential} className="edit-button">
+                    Issue Credential
+                  </button>
+                  <button onClick={navigateToProfile} className="edit-button">
+                    My Profile
+                  </button>
+                </div>
+              </div>
+            )
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            account ? (
+              <Profile handleLogout={handleLogout} />
             ) : (
-              <Profile handleLogout={handleLogout} /> 
-            )}
-          </Route>
-          {/* Add other routes here */}
-        </Switch>
-      </div>
-    </Router>
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/issue-credential"
+          element={
+            account ? (
+              <IssueCredential account={account} />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+      </Routes>
+    </div>
   );
 }
 

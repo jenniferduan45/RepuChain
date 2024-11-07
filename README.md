@@ -7,11 +7,13 @@ RepuChain/
 ├── frontend/                    # React.js frontend
 │   ├── public/                     # Static files (e.g. index.html)
 │   ├── src/                        # Frontend source code
-│   │   ├── components/                 # Reusable React components
-│   │   ├── utils/                      # Utility files (e.g. web3.js)
+│   │   ├── components/                 # React components
+│   │   ├── utils/                      # Utility files
+│   │   ├── contracts/                  # Compiled contract ABI
 │   │   ├── App.js                      # Main App component
 │   │   ├── index.js                    # Main entry point for React
 │   │   └── App.css                     # Basic CSS styles
+│   ├── package.json                # Frontend dependencies
 ├── backend/                     # Node.js (Express) backend
 │   ├── server.js                   # Backend server (Express)
 │   ├── package.json                # Backend dependencies
@@ -30,10 +32,12 @@ RepuChain/
 ```
 
 ## Install Dependencies
-### Install Truffle Dependencies
+### Install Truffle
 ```
 npm install -g truffle
 ```
+### Install Ganache
+Download Ganache Desktop at https://archive.trufflesuite.com/ganache/
 ### Install Backend Dependencies
 ```
 cd backend
@@ -60,7 +64,13 @@ npm start
 The frontend will run on `http://localhost:3000`.
 
 ## Run the project in docker
-sudo docker-compose up --build (if this is your first time run it)
-sudo docker-compose up(if you have already built)
+If this is your irst time run it
+```
+sudo docker-compose up --build
+```
+If you have already built it
+```
+sudo docker-compose up
+```
 
 ## Deployment
