@@ -4,6 +4,9 @@ FROM node:16
 # Set working directory
 WORKDIR /app
 
+# Install Truffle globally
+RUN npm install -g truffle
+
 # Copy package.json and package-lock.json
 COPY backend/package*.json ./
 
