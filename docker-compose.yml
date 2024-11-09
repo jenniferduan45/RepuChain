@@ -19,6 +19,9 @@ services:
       - DB_USER=root
       - DB_PASSWORD=123456
       - DB_NAME=repuchain  # Example database name
+      - BLOCKCHAIN_PROVIDER=http://127.0.0.1:7545
+      - CONTRACT_ADDRESS=0xCD6070d969d8Fcc8320A81E745FCF6722D550D53
+      - FRONTEND_BASE_URL=http://localhost:3000
     restart: unless-stopped
     command: npm start
 
