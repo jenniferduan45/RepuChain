@@ -5,6 +5,9 @@ import './App.css';
 import Login from './Login';
 import Profile from './Profile';
 import IssueCredential from './components/IssueCredential';
+import CredentialsList from './components/CredentialsList';
+import ViewCredential from './components/ViewCredential';
+import ViewAllCredentials from './components/ViewAllCredentials'; // Import the new component
 
 function App() {
   const [account, setAccount] = useState(null);
@@ -38,6 +41,10 @@ function App() {
     navigate('/profile');
   };
 
+  const navigateToCredentials = () => {
+    navigate('/credentials');
+  };
+
   return (
     <div className="App">
       {/* Navbar */}
@@ -68,6 +75,9 @@ function App() {
                   <button onClick={navigateToProfile} className="edit-button">
                     My Profile
                   </button>
+                  <button onClick={navigateToCredentials} className="edit-button">
+                    View My Credentials
+                  </button>
                 </div>
               </div>
             )
@@ -92,6 +102,24 @@ function App() {
               <Navigate to="/" />
             )
           }
+        />
+        <Route
+          path="/credentials"
+          element={
+            account ? (
+              <CredentialsList />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+        <Route
+          path="/share/credential/:credentialId"
+          element={<ViewCredential />}
+        />
+        <Route
+          path="/share/all/:address"
+          element={<ViewAllCredentials />}
         />
       </Routes>
     </div>
