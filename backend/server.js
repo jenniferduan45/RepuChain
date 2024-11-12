@@ -21,7 +21,7 @@ const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xCD6070d969d8Fcc8320A
 const web3 = new Web3(BLOCKCHAIN_PROVIDER);
 
 // Initialize the smart contract
-const contract = new web3.eth.Contract(require('../build/contracts/RepuChain.json').abi, CONTRACT_ADDRESS);
+const contract = new web3.eth.Contract(require('../frontend/src/contracts/RepuChain.json').abi, CONTRACT_ADDRESS);
 
 // Database connection pool
 const dbPool = mysql.createPool({
