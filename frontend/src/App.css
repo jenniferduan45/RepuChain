@@ -193,3 +193,16 @@ body {
     margin-bottom: 10px;
   }
 }
+
+/* View My Credentials page */
+.credentials-list {
+  text-align: left;
+}
+
+.credential {
+  margin-top: 20px;
+}
+
+.qr-code {
+  margin-top: 10px;
+}

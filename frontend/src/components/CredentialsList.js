@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
 
 function CredentialsList() {
@@ -7,6 +8,7 @@ function CredentialsList() {
   const [shareLinks, setShareLinks] = useState({});
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch credentials for the logged-in user
@@ -26,6 +28,10 @@ function CredentialsList() {
         setLoading(false);
       });
   }, [token]);
+
+  const handleBackToHome = () => {
+    navigate('/');
+  };
 
   // Generate QR Code for an individual credential
   const handleGenerateQrCode = async (credentialId) => {
@@ -64,13 +70,14 @@ function CredentialsList() {
   };
 
   return (
-    <div className="credentials-container">
+    <div className="profile-container">
       <h2>Your Credentials</h2>
       {loading ? (
         <p>Loading credentials...</p>
       ) : (
         <>
-          <button onClick={handleGenerateAllQrCode}>Generate QR Code for All Credentials</button>
+          <button onClick={handleGenerateAllQrCode} className="edit-button">Generate QR Code for All Credentials</button>
+          <button onClick={handleBackToHome} className="cancel-button">Back To Home</button>
           {qrCodeData.all && (
             <div className="qr-code">
               <QRCodeCanvas value={qrCodeData.all} />
@@ -83,7 +90,7 @@ function CredentialsList() {
                 <p><strong>Type:</strong> {credential.credentialType}</p>
                 <p><strong>Description:</strong> {credential.description}</p>
                 <p><strong>Date Issued:</strong> {credential.issueDate}</p>
-                <button onClick={() => handleGenerateQrCode(credential.credentialId)}>
+                <button onClick={() => handleGenerateQrCode(credential.credentialId)} className="edit-button">
                   Generate QR Code
                 </button>
                 {qrCodeData[credential.credentialId] && (
