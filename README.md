@@ -17,6 +17,7 @@ RepuChain/
 ├── backend/                     # Node.js (Express) backend
 │   ├── server.js                   # Backend server (Express)
 │   ├── package.json                # Backend dependencies
+│   ├── contracts/                  # Compiled contract ABI
 ├── contracts/                   # Solidity contracts
 │   └── RepuChain.sol            
 ├── migrations/                  # Migration scripts for Truffle
@@ -66,7 +67,7 @@ The frontend will run on `http://localhost:3000`.
 2. Prepare migration script in `migrations/`.
 3. Run `truffle compile` to compile the contract and generate ABI in `build/contracts/RepuChain.json`. 
 4. Open Ganache Desktop and create a workspace using `truffle-config.js`.
-5. Run `truffle migrate --network development` to deploy the contract to local blockchain. Once deployed, copy the generated file `RepuChain.json` to `frontend/src/contracts` and `backend/contracts` and update the deployed contract address in `frontend/src/components/IssueCredential.js`.
+5. Run `truffle migrate --network development` to deploy the contract to local blockchain. Once deployed, copy the generated file `RepuChain.json` to `frontend/src/contracts` and `backend/contracts` and update the deployed contract address in `docker-compose.yml`, `frontend/src/components/IssueCredential.js`, and `backend/server.js`.
 6. All the blocks, transactions, contracts, events, and logs under local development can be persisted and viewed in a workspace in Ganache Desktop.
 
 ## How to test locally
