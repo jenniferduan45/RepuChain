@@ -1,69 +1,197 @@
 /* src/Login.css */
 
+/* General Container */
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    background: #f5f5f5;
-    font-family: Arial, sans-serif;
-    margin: 0;
-  }
-  
-  /* Navigation Bar */
-  .navbar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background-color: #ffffff;
-    border-bottom: 1px solid #dadce0;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar-brand {
-    font-size: 20px;
-    color: #202124;
-    font-weight: bold;
-  }
-  
-  /* Adjust the login card to account for the navbar */
-  .login-card {
-    background: #fff;
-    padding: 40px 30px;
-    border-radius: 8px;
-    box-shadow: 0px 1px 3px rgba(60, 64, 67, 0.3),
-      0px 4px 8px rgba(60, 64, 67, 0.15);
-    text-align: center;
-    width: 360px;
-    margin-top: 100px; /* Add margin to push it below the navbar */
-  }
-  
-  .login-title {
-    font-size: 24px;
-    color: #202124;
-    margin-bottom: 8px;
-  }
-  
-  .login-subtitle {
-    font-size: 16px;
-    color: #5f6368;
-    margin-bottom: 24px;
-  }
-  
-  .login-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #1a73e8;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .login-button:hover {
-    background-color: #1669c1;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+/* Navigation Bar */
+.navbar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dadce0;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+}
+
+.navbar-brand {
+  font-size: 20px;
+  color: #202124;
+  font-weight: bold;
+}
+
+.navbar-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #5f6368;
+}
+
+.navbar-links a:hover {
+  color: #202124;
+}
+
+.hero-section {
+  margin-top: 80px;
+  margin-bottom: 20px;
+  text-align: center;
+  background: linear-gradient(to right, #e8f0fe, #f5f5f5);
+  padding: 60px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+}
+
+
+.hero-section h1 {
+  font-size: 28px;
+  color: #202124;
+  margin-bottom: 10px;
+}
+
+.hero-section p {
+  font-size: 16px;
+  color: #5f6368;
+  margin-bottom: 20px;
+}
+
+.hero-login-button {
+  padding: 10px 20px;
+  background-color: #1a73e8;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.hero-login-button,
+.edit-button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-login-button:hover {
+  background-color: #1669c1;
+}
+
+.image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #e8f0fe, #ffffff);
+  padding: 40px 0;
+}
+
+.image-wrapper {
+  width: 80%;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.hero-to-features-image {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.image-caption {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #5f6368;
+}
+
+/* Features Section */
+.features-section {
+  width: 100%;
+  padding:60px 20px;
+  background: #ffffff;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.features-section h2 {
+  font-size: 24px;
+  text-align: center;
+  color: #202124;
+  margin-bottom: 20px;
+}
+
+.features-grid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  flex: 1 1 300px;
+  margin: 10px;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.feature-item h3 {
+  font-size: 18px;
+  color: #202124;
+  margin-bottom: 10px;
+}
+
+.feature-item p {
+  font-size: 14px;
+  color: #5f6368;
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background: #202124;
+  color: #ffffff;
+}
+
+.footer p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Buttons for Profile Navigation */
+.profile-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.edit-button {
+  display: inline-block;
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #1a73e8;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #1669c1;
+}
+
+

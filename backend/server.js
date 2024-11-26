@@ -15,7 +15,7 @@ const PORT = 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 const BLOCKCHAIN_PROVIDER = process.env.BLOCKCHAIN_PROVIDER || 'http://127.0.0.1:7545';
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0x20a113f8723F1479D3444012Af8ed9C616b29b38';
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xE7a27fD9e2d542228022e89F9A0e035473eeDFf6';
 
 // Create and initialize Web3 instance directly with the provider URL
 const web3 = new Web3(BLOCKCHAIN_PROVIDER);
