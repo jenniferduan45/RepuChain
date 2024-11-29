@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RepuChainJSON from '../contracts/RepuChain.json';
 
 const contractABI = RepuChainJSON.abi;
-const contractAddress = '0xCD6070d969d8Fcc8320A81E745FCF6722D550D53'; // Deployed contract address
+const contractAddress = '0xE7a27fD9e2d542228022e89F9A0e035473eeDFf6'; // Deployed contract address
 
 function IssueCredential({ account }) {
   const [owner, setOwner] = useState('');

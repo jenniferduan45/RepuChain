@@ -15,13 +15,13 @@ const PORT = 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 const BLOCKCHAIN_PROVIDER = process.env.BLOCKCHAIN_PROVIDER || 'http://127.0.0.1:7545';
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xCD6070d969d8Fcc8320A81E745FCF6722D550D53';
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xE7a27fD9e2d542228022e89F9A0e035473eeDFf6';
 
 // Create and initialize Web3 instance directly with the provider URL
 const web3 = new Web3(BLOCKCHAIN_PROVIDER);
 
 // Initialize the smart contract
-const contract = new web3.eth.Contract(require('../frontend/src/contracts/RepuChain.json').abi, CONTRACT_ADDRESS);
+const contract = new web3.eth.Contract(require('./contracts/RepuChain.json').abi, CONTRACT_ADDRESS);
 
 // Database connection pool
 const dbPool = mysql.createPool({

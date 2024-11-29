@@ -68,17 +68,15 @@ function App() {
                   <h2>Welcome to RepuChain</h2>
                   <h3>Blockchain Verified Credentials You Can Trust</h3>
                 </div>
-                <div classname="button-group">
-                  <button onClick={navigateToIssueCredential} className="edit-button">
-                    Issue Credential
-                  </button>
-                  <button onClick={navigateToProfile} className="edit-button">
-                    My Profile
-                  </button>
-                  <button onClick={navigateToCredentials} className="edit-button">
-                    View My Credentials
-                  </button>
-                </div>
+                <button onClick={navigateToIssueCredential} className="edit-button">
+                  Issue Credential
+                </button>
+                <button onClick={navigateToProfile} className="edit-button">
+                  My Profile
+                </button>
+                <button onClick={navigateToCredentials} className="edit-button">
+                  View My Credentials
+                </button>
               </div>
             )
           }
