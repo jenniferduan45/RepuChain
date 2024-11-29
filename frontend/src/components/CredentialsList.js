@@ -7,6 +7,7 @@ function CredentialsList() {
   const [qrCodeData, setQrCodeData] = useState({});
   const [shareLinks, setShareLinks] = useState({});
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all'); // State for filtering credentials (all, received, issued)
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -43,7 +44,7 @@ function CredentialsList() {
         },
       });
       const data = await response.json();
-      // Save the share link and QR code data in state instead of using an alert
+      // Save the share link and QR code data in state
       setShareLinks((prev) => ({ ...prev, [credentialId]: data.shareLink }));
       setQrCodeData((prev) => ({ ...prev, [credentialId]: data.qrCodeUrl }));
     } catch (error) {
@@ -61,12 +62,23 @@ function CredentialsList() {
         },
       });
       const data = await response.json();
-      // Save the share link and QR code data in state instead of using an alert
+      // Save the share link and QR code data in state
       setShareLinks((prev) => ({ ...prev, all: data.shareLink }));
       setQrCodeData((prev) => ({ ...prev, all: data.qrCodeUrl }));
     } catch (error) {
       console.error('Error generating QR code for all credentials:', error);
     }
+  };
+
+  // Filter credentials based on the selected filter
+  const filteredCredentials = () => {
+    if (filter === 'received') {
+      return credentials.received || [];
+    }
+    if (filter === 'issued') {
+      return credentials.issued || [];
+    }
+    return [...(credentials.received || []), ...(credentials.issued || [])];
   };
 
   return (
@@ -76,16 +88,31 @@ function CredentialsList() {
         <p>Loading credentials...</p>
       ) : (
         <>
-          <button onClick={handleGenerateAllQrCode} className="edit-button">Generate QR Code for All Credentials</button>
-          <button onClick={handleBackToHome} className="cancel-button">Back To Home</button>
+          <button onClick={handleGenerateAllQrCode} className="edit-button">
+            Generate QR Code for All Credentials
+          </button>
+          <button onClick={handleBackToHome} className="cancel-button">
+            Back To Home
+          </button>
+
           {qrCodeData.all && (
             <div className="qr-code">
               <QRCodeCanvas value={qrCodeData.all} />
-              <p>Share link: <a href={shareLinks.all} target="_blank" rel="noopener noreferrer">{shareLinks.all}</a></p>
+              <p>
+                Share link: <a href={shareLinks.all} target="_blank" rel="noopener noreferrer">{shareLinks.all}</a>
+              </p>
             </div>
           )}
+
+          {/* Filter Options */}
+          <div className="filter-options">
+            <button onClick={() => setFilter('all')} className={`filter-button ${filter === 'all' ? 'active' : ''}`}>All</button>
+            <button onClick={() => setFilter('received')} className={`filter-button ${filter === 'received' ? 'active' : ''}`}>Received</button>
+            <button onClick={() => setFilter('issued')} className={`filter-button ${filter === 'issued' ? 'active' : ''}`}>Issued</button>
+          </div>
+
           <div className="credentials-list">
-            {credentials.map((credential) => (
+            {filteredCredentials().map((credential) => (
               <div key={credential.credentialId} className="credential">
                 <p><strong>Type:</strong> {credential.credentialType}</p>
                 <p><strong>Description:</strong> {credential.description}</p>
@@ -96,7 +123,9 @@ function CredentialsList() {
                 {qrCodeData[credential.credentialId] && (
                   <div className="qr-code">
                     <QRCodeCanvas value={qrCodeData[credential.credentialId]} />
-                    <p>Share link: <a href={shareLinks[credential.credentialId]} target="_blank" rel="noopener noreferrer">{shareLinks[credential.credentialId]}</a></p>
+                    <p>
+                      Share link: <a href={shareLinks[credential.credentialId]} target="_blank" rel="noopener noreferrer">{shareLinks[credential.credentialId]}</a>
+                    </p>
                   </div>
                 )}
               </div>
@@ -109,3 +138,4 @@ function CredentialsList() {
 }
 
 export default CredentialsList;
+
