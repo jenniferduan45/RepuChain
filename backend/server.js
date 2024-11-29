@@ -168,48 +168,69 @@ app.put('/user/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /credentials - Get all credentials for a user directly from the blockchain
+
+// Helper function to get credential details by credentialId
+async function getCredentialById(credentialId) {
+  return await contract.methods.credentials(credentialId).call();
+}
+
+// GET /credentials - Get all credentials for a user (both received and issued)
 app.get('/credentials', authenticateToken, async (req, res) => {
   const { address } = req.user;
 
   try {
-    // Call the blockchain smart contract to retrieve credential IDs for the user
-    const credentialIds = await contract.methods.getUserCredentials(address).call();
+    // Fetch received and issued credentials by the user
+    const receivedCredentialIds = await contract.methods.getUserReceivedCredentials(address).call();
+    const issuedCredentialIds = await contract.methods.getUserIssuedCredentials(address).call();
 
-    // Fetch each credential based on credential IDs
-    const credentials = await Promise.all(
-      credentialIds.map(async (credentialId) => {
-        const credential = await contract.methods.credentials(credentialId).call();
-        return {
-          credentialId,
-          owner: credential.owner,
-          issuer: credential.issuer,
-          credentialType: credential.credentialType,
-          description: credential.description,
-          issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
-        };
-      })
-    );
+    // Fetch details for each received credential
+    const receivedCredentials = await Promise.all(receivedCredentialIds.map(async (credentialId) => {
+      const credential = await getCredentialById(credentialId);
+      return {
+        credentialId,
+        owner: credential.owner,
+        issuer: credential.issuer,
+        credentialType: credential.credentialType,
+        description: credential.description,
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+      };
+    }));
 
-    return res.json(credentials);
+    // Fetch details for each issued credential
+    const issuedCredentials = await Promise.all(issuedCredentialIds.map(async (credentialId) => {
+      const credential = await getCredentialById(credentialId);
+      return {
+        credentialId,
+        owner: credential.owner,
+        issuer: credential.issuer,
+        credentialType: credential.credentialType,
+        description: credential.description,
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+      };
+    }));
+
+    return res.json({
+      received: receivedCredentials,
+      issued: issuedCredentials,
+    });
   } catch (error) {
-    console.error('Error fetching credentials from blockchain:', error);
-    return res.status(500).json({ error: 'Failed to fetch credentials from blockchain' });
+    console.error('Error fetching credentials:', error);
+    return res.status(500).json({ error: 'Failed to fetch credentials' });
   }
 });
 
-// GET /credentials/:credentialId/share - Generate QR Code for a specific credential
 const TinyURL = require('tinyurl');
 
+// GET /credentials/:credentialId/share - Generate QR Code for a specific credential
 app.get('/credentials/:credentialId/share', authenticateToken, async (req, res) => {
   const { credentialId } = req.params;
   const { address } = req.user;
 
   try {
-    // Get credential from blockchain to verify ownership
-    const credential = await contract.methods.credentials(credentialId).call();
+    // Get credential from blockchain to verify ownership or issuing rights
+    const credential = await getCredentialById(credentialId);
 
-    if (!credential || credential.owner.toLowerCase() !== address.toLowerCase()) {
+    if (!credential || (credential.owner.toLowerCase() !== address.toLowerCase() && credential.issuer.toLowerCase() !== address.toLowerCase())) {
       return res.status(403).json({ error: 'You do not have permission to share this credential' });
     }
 
@@ -217,7 +238,7 @@ app.get('/credentials/:credentialId/share', authenticateToken, async (req, res) 
     const originalShareLink = `${FRONTEND_BASE_URL}/share/credential/${credentialId}`;
 
     // Shorten the link
-    TinyURL.shorten(originalShareLink, function(shortenedLink) {
+    TinyURL.shorten(originalShareLink, function (shortenedLink) {
       if (!shortenedLink) {
         return res.status(500).json({ error: 'Failed to generate short URL' });
       }
@@ -237,7 +258,6 @@ app.get('/credentials/:credentialId/share', authenticateToken, async (req, res) 
     return res.status(500).json({ error: 'Failed to generate QR code' });
   }
 });
-
 
 // GET /credentials/shareAll - Generate QR Code for all credentials of a user
 app.get('/credentials/shareAll', authenticateToken, async (req, res) => {
@@ -261,7 +281,7 @@ app.get('/share/credential/:credentialId', async (req, res) => {
 
   try {
     // Fetch the credential details from the blockchain
-    const credential = await contract.methods.credentials(credentialId).call();
+    const credential = await getCredentialById(credentialId);
 
     if (!credential) {
       return res.status(404).json({ error: 'Credential not found' });
@@ -269,6 +289,7 @@ app.get('/share/credential/:credentialId', async (req, res) => {
 
     // Format the credential details to return as response
     const formattedCredential = {
+      credentialId,
       owner: credential.owner,
       issuer: credential.issuer,
       credentialType: credential.credentialType,
@@ -288,35 +309,47 @@ app.get('/share/all/:address', async (req, res) => {
   const { address } = req.params;
 
   try {
-    // Fetch all credential IDs associated with the user address
-    const credentialIds = await contract.methods.getUserCredentials(address).call();
+    // Fetch received and issued credentials by the user
+    const receivedCredentialIds = await contract.methods.getUserReceivedCredentials(address).call();
+    const issuedCredentialIds = await contract.methods.getUserIssuedCredentials(address).call();
 
-    // Fetch each credential based on the credential IDs
-    const credentials = await Promise.all(
-      credentialIds.map(async (credentialId) => {
-        const credential = await contract.methods.credentials(credentialId).call();
-        return {
-          credentialId,
-          owner: credential.owner,
-          issuer: credential.issuer,
-          credentialType: credential.credentialType,
-          description: credential.description,
-          issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
-        };
-      })
-    );
+    // Fetch details for each received credential
+    const receivedCredentials = await Promise.all(receivedCredentialIds.map(async (credentialId) => {
+      const credential = await getCredentialById(credentialId);
+      return {
+        credentialId,
+        owner: credential.owner,
+        issuer: credential.issuer,
+        credentialType: credential.credentialType,
+        description: credential.description,
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+      };
+    }));
 
-    if (credentials.length === 0) {
-      return res.status(404).json({ error: 'No credentials found for this user' });
-    }
+    // Fetch details for each issued credential
+    const issuedCredentials = await Promise.all(issuedCredentialIds.map(async (credentialId) => {
+      const credential = await getCredentialById(credentialId);
+      return {
+        credentialId,
+        owner: credential.owner,
+        issuer: credential.issuer,
+        credentialType: credential.credentialType,
+        description: credential.description,
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+      };
+    }));
 
     // Return all credentials of the user as response
-    return res.json(credentials);
+    return res.json({
+      received: receivedCredentials,
+      issued: issuedCredentials,
+    });
   } catch (error) {
     console.error('Error fetching all credentials for user:', error);
     return res.status(500).json({ error: 'Failed to fetch all credentials for user' });
   }
 });
+
 
 // Start server
 app.listen(PORT, '0.0.0.0', () => {

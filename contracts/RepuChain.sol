@@ -11,7 +11,9 @@ contract RepuChain {
     }
 
     mapping(bytes32 => Credential) public credentials;
-    mapping(address => bytes32[]) private userCredentials; // Mapping to store list of credentials for each user
+    mapping(address => bytes32[]) private userReceivedCredentials;
+    mapping(address => bytes32[]) private userIssuedCredentials;
+
     uint256 public credentialCount;
 
     event CredentialIssued(
@@ -28,7 +30,10 @@ contract RepuChain {
         string memory _credentialType,
         string memory _description
     ) public returns (bytes32) {
-        bytes32 credentialId = keccak256(abi.encodePacked(_owner, msg.sender, _credentialType, _description, block.timestamp));
+        bytes32 credentialId = keccak256(
+            abi.encodePacked(_owner, msg.sender, _credentialType, _description, block.timestamp)
+        );
+
         require(credentials[credentialId].issueDate == 0, "Credential ID already exists");
 
         credentials[credentialId] = Credential({
@@ -39,7 +44,9 @@ contract RepuChain {
             issueDate: block.timestamp
         });
 
-        userCredentials[_owner].push(credentialId); // Add credential ID to the user's list
+        userReceivedCredentials[_owner].push(credentialId);
+        userIssuedCredentials[msg.sender].push(credentialId);
+
         credentialCount++;
 
         emit CredentialIssued(
@@ -54,8 +61,13 @@ contract RepuChain {
         return credentialId;
     }
 
-    // Function to get all credentials for a user
-    function getUserCredentials(address _user) public view returns (bytes32[] memory) {
-        return userCredentials[_user];
+    // Function to get received credentials by a user
+    function getUserReceivedCredentials(address _user) public view returns (bytes32[] memory) {
+        return userReceivedCredentials[_user];
+    }
+
+    // Function to get issued credentials by a user
+    function getUserIssuedCredentials(address _user) public view returns (bytes32[] memory) {
+        return userIssuedCredentials[_user];
     }
 }
