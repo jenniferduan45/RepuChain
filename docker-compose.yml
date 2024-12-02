@@ -20,7 +20,7 @@ services:
       - DB_PASSWORD=123456
       - DB_NAME=repuchain  # Example database name
       - BLOCKCHAIN_PROVIDER=http://host.docker.internal:7545
-      - CONTRACT_ADDRESS=0x20a113f8723F1479D3444012Af8ed9C616b29b38
+      - CONTRACT_ADDRESS=0xcF9Dd21B71587742E64a2D6fA6b60d2B89c06326
       - FRONTEND_BASE_URL=http://localhost:3000
     restart: unless-stopped
     command: npm start

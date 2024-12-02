@@ -34,13 +34,17 @@ function ViewCredential() {
   }
 
   return (
-    <div className="credential-view">
+    <div className="profile-container">
       <h2>Credential Details</h2>
-      <p><strong>Owner:</strong> {credential.owner}</p>
-      <p><strong>Issuer:</strong> {credential.issuer}</p>
-      <p><strong>Type:</strong> {credential.credentialType}</p>
-      <p><strong>Description:</strong> {credential.description}</p>
-      <p><strong>Date Issued:</strong> {credential.issueDate}</p>
+      <div className="credentials-list">
+        <div className="credential">
+          <p><strong>Owner:</strong> {credential.owner}</p>
+          <p><strong>Issuer:</strong> {credential.issuer}</p>
+          <p><strong>Type:</strong> {credential.credentialType}</p>
+          <p><strong>Description:</strong> {credential.description}</p>
+          <p><strong>Date Issued:</strong> {credential.issueDate}</p>
+        </div>
+      </div>
     </div>
   );
 }
