@@ -5,9 +5,11 @@ function ViewCredential() {
   const { credentialId } = useParams();
   const [credential, setCredential] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [verificationResult, setVerificationResult] = useState(null);
+  const [verifying, setVerifying] = useState(false);
 
+  // Fetch credential details
   useEffect(() => {
-    // Fetch the credential details using the shared link
     fetch(`${process.env.REACT_APP_API_URL}/share/credential/${credentialId}`)
       .then((response) => {
         if (!response.ok) {
@@ -24,6 +26,28 @@ function ViewCredential() {
         setLoading(false);
       });
   }, [credentialId]);
+
+  // Verify transaction function
+  async function verifyTransaction(txHash) {
+    setVerifying(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/verify-transaction`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ txHash }),
+      });
+
+      const data = await response.json();
+      setVerificationResult(data.success ? "Valid Transaction" : "Invalid Transaction");
+    } catch (error) {
+      console.error("Error verifying transaction:", error);
+      setVerificationResult("Verification failed");
+    } finally {
+      setVerifying(false);
+    }
+  }
 
   if (loading) {
     return <div>Loading...</div>;

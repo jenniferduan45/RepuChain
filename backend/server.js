@@ -3,6 +3,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const ethers = require('ethers');
+const { JsonRpcProvider } = require('ethers');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
 require('dotenv').config();
@@ -15,7 +16,7 @@ const PORT = 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 const BLOCKCHAIN_PROVIDER = process.env.BLOCKCHAIN_PROVIDER || 'http://127.0.0.1:7545';
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xcF9Dd21B71587742E64a2D6fA6b60d2B89c06326';
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0x5C64bbeB2dDB1391696FAE54ae6F89cf4eB114c2';
 
 // Create and initialize Web3 instance directly with the provider URL
 const web3 = new Web3(BLOCKCHAIN_PROVIDER);
@@ -109,6 +110,47 @@ app.post('/auth/login', async (req, res) => {
     console.error('Error during authentication:', error);
     return res.status(500).json({ error: 'Authentication failed.' });
   }
+});
+
+
+// Function to verify Ethereum transactions
+async function verifyTransaction(txHash) {
+  try {
+    // Connect to an Ethereum network provider
+
+    const provider = new ethers.JsonRpcProvider('http://127.0.0.1:7545');
+ 
+
+    // Fetch the transaction receipt
+    const receipt = await provider.getTransactionReceipt(txHash);
+
+    if (!receipt) {
+      console.log("Transaction not found");
+      return { success: false, message: "Transaction not found" };
+    }
+
+    // Check if the transaction was successful
+    const isValid = receipt.status === 1; // 1 means success, 0 means failed
+
+    return { success: isValid, transaction: receipt };
+  } catch (error) {
+    console.error("Error verifying transaction:", error);
+    return { success: false, message: "Error verifying transaction" };
+  }
+}
+
+module.exports = { verifyTransaction };
+
+// Add a route for transaction verification
+app.post("/verify-transaction", async (req, res) => {
+  const { txHash } = req.body;
+
+  if (!txHash) {
+    return res.status(400).json({ success: false, message: "Transaction hash is required" });
+  }
+
+  const result = await verifyTransaction(txHash);
+  res.status(result.success ? 200 : 400).json(result);
 });
 
 // GET /user/profile - Get user profile
