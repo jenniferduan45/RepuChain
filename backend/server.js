@@ -111,46 +111,65 @@ app.post('/auth/login', async (req, res) => {
     return res.status(500).json({ error: 'Authentication failed.' });
   }
 });
+function toBytes32(value) {
+  const utf8Encoder = new TextEncoder(); // Built-in encoder for UTF-8
+  const bytes = utf8Encoder.encode(value); // Convert string to UTF-8 byte array
 
+  if (bytes.length > 32) {
+    throw new Error("String too long for bytes32");
+  }
 
-// Function to verify Ethereum transactions
-async function verifyTransaction(txHash) {
+  // Create a 32-byte array and copy the UTF-8 bytes into it
+  const bytes32 = new Uint8Array(32);
+  bytes32.set(bytes); // Copy the string bytes into the beginning of the array
+
+  // Convert to hexadecimal format prefixed with '0x'
+  return '0x' + Array.from(bytes32).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyCredential(credentialId, userAddress) {
   try {
-    // Connect to an Ethereum network provider
+    // Fetch credential from blockchain
+    const credentialIdBytes32 = toBytes32(credentialId);
+    const credential = await contract.methods.credentials(credentialIdBytes32).call();
 
-    const provider = new ethers.JsonRpcProvider('http://127.0.0.1:7545');
- 
-
-    // Fetch the transaction receipt
-    const receipt = await provider.getTransactionReceipt(txHash);
-
-    if (!receipt) {
-      console.log("Transaction not found");
-      return { success: false, message: "Transaction not found" };
+    if (!credential) {
+      return { valid: false, message: "Credential does not exist" };
     }
 
-    // Check if the transaction was successful
-    const isValid = receipt.status === 1; // 1 means success, 0 means failed
+    // Validate ownership
+    if (credential.owner.toLowerCase() !== userAddress.toLowerCase()) {
+      return { valid: false, message: "Credential ownership mismatch" };
+    }
 
-    return { success: isValid, transaction: receipt };
+    // Validate the issuer
+    const isCertifiedIssuer = await contract.methods.isCertifiedIssuer(credential.issuer).call();
+    if (!isCertifiedIssuer) {
+      return { valid: false, message: "Issuer is not authorized" };
+    }
+
+    // Validate expiry (if applicable)
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (parseInt(credential.expiryDate, 10) < currentTimestamp) {
+      return { valid: false, message: "Credential has expired" };
+    }
+
+    return { valid: true, message: "Credential is valid" };
   } catch (error) {
-    console.error("Error verifying transaction:", error);
-    return { success: false, message: "Error verifying transaction" };
+    console.error("Error verifying credential:", error);
+    return { valid: false, message: "Error during credential verification" };
   }
 }
 
-module.exports = { verifyTransaction };
+app.post("/verify-credential", async (req, res) => {
+  const { credentialId, userAddress } = req.body;
 
-// Add a route for transaction verification
-app.post("/verify-transaction", async (req, res) => {
-  const { txHash } = req.body;
-
-  if (!txHash) {
-    return res.status(400).json({ success: false, message: "Transaction hash is required" });
+  if (!credentialId || !userAddress) {
+    return res.status(400).json({ valid: false, message: "Credential ID and user address are required" });
   }
 
-  const result = await verifyTransaction(txHash);
-  res.status(result.success ? 200 : 400).json(result);
+  const result = await verifyCredential(credentialId, userAddress);
+  return res.status(result.valid ? 200 : 400).json(result);
 });
 
 // GET /user/profile - Get user profile
