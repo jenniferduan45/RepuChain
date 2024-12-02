@@ -88,7 +88,7 @@ function CredentialsList() {
         <p>Loading credentials...</p>
       ) : (
         <>
-          <button onClick={handleGenerateAllQrCode} className="edit-button">
+          <button onClick={handleGenerateAllQrCode} className="save-button">
             Generate QR Code for All Credentials
           </button>
           <button onClick={handleBackToHome} className="cancel-button">
@@ -106,9 +106,9 @@ function CredentialsList() {
 
           {/* Filter Options */}
           <div className="filter-options">
-            <button onClick={() => setFilter('all')} className={`filter-button ${filter === 'all' ? 'active' : ''}`}>All</button>
-            <button onClick={() => setFilter('received')} className={`filter-button ${filter === 'received' ? 'active' : ''}`}>Received</button>
-            <button onClick={() => setFilter('issued')} className={`filter-button ${filter === 'issued' ? 'active' : ''}`}>Issued</button>
+            <button onClick={() => setFilter('all')} className={`filter-button-${filter === 'all' ? 'active' : ''}`}>All</button>
+            <button onClick={() => setFilter('received')} className={`filter-button-${filter === 'received' ? 'active' : ''}`}>Received</button>
+            <button onClick={() => setFilter('issued')} className={`filter-button-${filter === 'issued' ? 'active' : ''}`}>Issued</button>
           </div>
 
           <div className="credentials-list">
@@ -117,7 +117,7 @@ function CredentialsList() {
                 <p><strong>Type:</strong> {credential.credentialType}</p>
                 <p><strong>Description:</strong> {credential.description}</p>
                 <p><strong>Date Issued:</strong> {credential.issueDate}</p>
-                <button onClick={() => handleGenerateQrCode(credential.credentialId)} className="edit-button">
+                <button onClick={() => handleGenerateQrCode(credential.credentialId)} className="save-button">
                   Generate QR Code
                 </button>
                 {qrCodeData[credential.credentialId] && (

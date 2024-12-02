@@ -54,18 +54,18 @@ function ViewAllCredentials() {
   }
 
   return (
-    <div className="credentials-view-all">
+    <div className="profile-container">
       <h2>All Credentials</h2>
 
       {/* Filter Options */}
       <div className="filter-options">
-        <button onClick={() => setFilter('all')} className={filter === 'all' ? 'active' : ''}>
+        <button onClick={() => setFilter('all')} className={`filter-button-${filter === 'all' ? 'active' : ''}`}>
           View All
         </button>
-        <button onClick={() => setFilter('received')} className={filter === 'received' ? 'active' : ''}>
+        <button onClick={() => setFilter('received')} className={`filter-button-${filter === 'received' ? 'active' : ''}`}>
           View Received
         </button>
-        <button onClick={() => setFilter('issued')} className={filter === 'issued' ? 'active' : ''}>
+        <button onClick={() => setFilter('issued')} className={`filter-button-${filter === 'issued' ? 'active' : ''}`}>
           View Issued
         </button>
       </div>

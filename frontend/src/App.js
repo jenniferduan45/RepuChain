@@ -63,19 +63,19 @@ function App() {
             !account ? (
               <Login onLoginSuccess={handleLoginSuccess} />
             ) : (
-              <div className="profile-container">
+              <div className="home-container">
                 <div className="title">
-                  <h2>Welcome to RepuChain</h2>
-                  <h3>Blockchain Verified Credentials You Can Trust</h3>
+                  <h1>Welcome to RepuChain</h1>
+                  <p>Blockchain Verified Credentials You Can Trust</p>
                 </div>
-                <button onClick={navigateToIssueCredential} className="edit-button">
+                <button onClick={navigateToIssueCredential} className="home-button">
                   Issue Credential
                 </button>
-                <button onClick={navigateToProfile} className="edit-button">
-                  My Profile
-                </button>
-                <button onClick={navigateToCredentials} className="edit-button">
+                <button onClick={navigateToCredentials} className="home-button">
                   View My Credentials
+                </button>
+                <button onClick={navigateToProfile} className="home-button">
+                  My Profile
                 </button>
               </div>
             )
