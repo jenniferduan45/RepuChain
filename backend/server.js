@@ -3,7 +3,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const ethers = require('ethers');
-const { JsonRpcProvider } = require('ethers');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
 require('dotenv').config();
