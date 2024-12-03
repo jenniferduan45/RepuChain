@@ -129,6 +129,7 @@ function toBytes32(value) {
 async function verifyCredential(credentialId, userAddress, issuer) {
   try {
     // Fetch credential from blockchain
+    const utf8Encoder = new TextEncoder();
     const credentialIdBytes32 = utf8Encoder.encode(credentialId);
     const credential = await contract.methods.credentials(credentialIdBytes32).call();
 
