@@ -110,27 +110,12 @@ app.post('/auth/login', async (req, res) => {
     return res.status(500).json({ error: 'Authentication failed.' });
   }
 });
-function toBytes32(value) {
-  const utf8Encoder = new TextEncoder(); // Built-in encoder for UTF-8
-  const bytes = utf8Encoder.encode(value); // Convert string to UTF-8 byte array
-
-  if (bytes.length > 32) {
-    throw new Error("String too long for bytes32");
-  }
-
-  // Create a 32-byte array and copy the UTF-8 bytes into it
-  const bytes32 = new Uint8Array(32);
-  bytes32.set(bytes); // Copy the string bytes into the beginning of the array
-
-  // Convert to hexadecimal format prefixed with '0x'
-  return '0x' + Array.from(bytes32).map(b => b.toString(16).padStart(2, '0')).join('');
-}
 
 async function verifyCredential(credentialId, userAddress, issuer) {
   try {
     // Fetch credential from blockchain
-    const credentialIdBytes32 = toBytes32(credentialId);
-    const credential = await contract.methods.credentials(credentialIdBytes32).call();
+
+    const credential = await contract.methods.credentials(credentialId).call();
 
     if (!credential) {
       return { valid: false, message: "Credential does not exist" };

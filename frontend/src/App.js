@@ -42,6 +42,10 @@ function App() {
     navigate('/profile');
   };
 
+  const navigateToVerify = () => {
+    navigate('/verify');
+  };
+
   const navigateToCredentials = () => {
     navigate('/credentials');
   };
@@ -78,6 +82,9 @@ function App() {
                 <button onClick={navigateToProfile} className="home-button">
                   My Profile
                 </button>
+                <button onClick={navigateToVerify} className="home-button">
+                  Verify Credentials
+                </button>
               </div>
             )
           }
@@ -95,11 +102,9 @@ function App() {
         <Route
           path="/issue-credential"
           element={
-            account ? (
+
               <IssueCredential account={account} />
-            ) : (
-              <Navigate to="/" />
-            )
+
           }
         />
         <Route
