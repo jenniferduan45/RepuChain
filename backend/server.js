@@ -15,7 +15,7 @@ const PORT = 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 const BLOCKCHAIN_PROVIDER = process.env.BLOCKCHAIN_PROVIDER || 'http://127.0.0.1:7545';
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0x5C64bbeB2dDB1391696FAE54ae6F89cf4eB114c2';
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xcF9Dd21B71587742E64a2D6fA6b60d2B89c06326';
 
 // Create and initialize Web3 instance directly with the provider URL
 const web3 = new Web3(BLOCKCHAIN_PROVIDER);
@@ -114,7 +114,6 @@ app.post('/auth/login', async (req, res) => {
 async function verifyCredential(credentialId, userAddress, issuer) {
   try {
     // Fetch credential from blockchain
-
     const credential = await contract.methods.credentials(credentialId).call();
 
     if (!credential) {
@@ -130,15 +129,6 @@ async function verifyCredential(credentialId, userAddress, issuer) {
     if (credential.issuer.toLowerCase() !== issuer.toLowerCase()) {
       return { valid: false, message: "Credential issuer mismatch" };
     }
-    // Validate the issuer
-
-    // TODO: We can improve this feature by add isCertifiedIssuer logic into solidity
-    // but this implementation can be too complex for now
-
-    // const isCertifiedIssuer = await contract.methods.isCertifiedIssuer(credential.issuer).call();
-    // if (!isCertifiedIssuer) {
-    //   return { valid: false, message: "Issuer is not authorized" };
-    // }
 
     // Validate expiry (if applicable)
     const currentTimestamp = Math.floor(Date.now() / 1000);
