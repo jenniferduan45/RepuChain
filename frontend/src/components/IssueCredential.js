@@ -81,7 +81,7 @@ function IssueCredential({ account }) {
           />
         </div>
         <div className="button-group">
-          <button onClick={handleSubmit} className="save-button">Issue Credential</button>
+          <button type="submit" className="save-button">Issue Credential</button>
           <button onClick={handleBackToHome} className="cancel-button">Back To Home</button>
         </div>
       </form>

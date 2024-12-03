@@ -9,19 +9,14 @@ const VerifyCredential = () => {
   const handleBackToHome = () => {
     navigate('/');
   };
-  const handleVerify = async () => {
+  const handleVerify = async (e) => {
+    e.preventDefault();
     // Clear the log
-    setLog("");
-
-    // Validate inputs
-    if (!credentialId || !userAddress) {
-      setLog("Error: Please provide both Credential ID and User Address.");
-      return;
-    }
+    setLog('');
 
     try {
       // Display loading message
-      setLog("Verifying...");
+      setLog('Verifying...');
 
       // Send the request to the backend
       const response = await fetch("http://localhost:3001/verify-credential", {
@@ -31,24 +26,28 @@ const VerifyCredential = () => {
         },
         body: JSON.stringify({ credentialId, userAddress, issuer }),
       });
+      setLog('');
 
       const data = await response.json();
 
       // Display the result
       if (response.ok) {
-        setLog(`Success: ${data.message}`);
+        setCredentialId('');
+        setUserAddress('');
+        setIssuer('');
+        alert(`Success: ${data.message}`);
       } else {
-        setLog(`Error: ${data.message}`);
+        alert(`Invalid Credential: ${data.message}`);
       }
     } catch (error) {
-      setLog(`Error: ${error.message}`);
+      alert(`Error: ${error.message}`);
     }
   };
 
   return (
     <div className="profile-container">
       <h2>Verify Credential</h2>
-      <form onSubmit={(e) => e.preventDefault()} className="profile-edit-form">
+      <form onSubmit={handleVerify} className="profile-edit-form">
         <div className="form-group">
           <label>Credential ID:</label>
           <input
@@ -59,7 +58,7 @@ const VerifyCredential = () => {
           />
         </div>
         <div className="form-group">
-          <label>User Wallet Address:</label>
+          <label>Owner Wallet Address:</label>
           <input
             type="text"
             value={userAddress}
@@ -68,7 +67,7 @@ const VerifyCredential = () => {
           />
         </div>
         <div className="form-group">
-          <label>Issuer Address:</label>
+          <label>Issuer Wallet Address:</label>
           <input
             type="text"
             value={issuer}
@@ -77,7 +76,7 @@ const VerifyCredential = () => {
         </div>
         <div className="button-group">
           
-          <button onClick={handleVerify} className="save-button">
+          <button type="submit" className="save-button">
             Verify Credential
           </button>
           <button onClick={handleBackToHome} className="cancel-button">Back To Home</button>

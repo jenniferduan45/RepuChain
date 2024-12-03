@@ -42,8 +42,8 @@ function App() {
     navigate('/profile');
   };
 
-  const navigateToVerify = () => {
-    navigate('/verify');
+  const navigateToVerifyCredential = () => {
+    navigate('/verify-credential');
   };
 
   const navigateToCredentials = () => {
@@ -76,14 +76,14 @@ function App() {
                 <button onClick={navigateToIssueCredential} className="home-button">
                   Issue Credential
                 </button>
+                <button onClick={navigateToVerifyCredential} className="home-button">
+                  Verify Credential
+                </button>
                 <button onClick={navigateToCredentials} className="home-button">
                   View My Credentials
                 </button>
                 <button onClick={navigateToProfile} className="home-button">
                   My Profile
-                </button>
-                <button onClick={navigateToVerify} className="home-button">
-                  Verify Credentials
                 </button>
               </div>
             )
@@ -128,8 +128,14 @@ function App() {
           element={<ViewAllCredentials />}
         />
         <Route
-          path="/verify"
-          element={<VerifyCredential />}
+          path="/verify-credential"
+          element={
+            account ? (
+              <VerifyCredential />
+            ) : (
+              <Navigate to="/" />
+            )
+          }
         />
       </Routes>
     </div>
