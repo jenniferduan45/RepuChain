@@ -3,6 +3,7 @@ import React, { useState } from "react";
 const VerifyCredential = () => {
   const [credentialId, setCredentialId] = useState("");
   const [userAddress, setUserAddress] = useState("");
+  const [issuer, setIssuer] = useState("");
   const [log, setLog] = useState("");
 
   const handleVerify = async () => {
@@ -25,7 +26,7 @@ const VerifyCredential = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ credentialId, userAddress }),
+        body: JSON.stringify({ credentialId, userAddress, issuer }),
       });
 
       const data = await response.json();
@@ -56,6 +57,13 @@ const VerifyCredential = () => {
         placeholder="Enter User Address"
         value={userAddress}
         onChange={(e) => setUserAddress(e.target.value)}
+        style={{ marginBottom: "10px", padding: "8px", width: "300px", display: "block" }}
+      />
+      <input
+        type="text"
+        placeholder="Enter Issuer Address"
+        value={userAddress}
+        onChange={(e) => setIssuer(e.target.value)}
         style={{ marginBottom: "10px", padding: "8px", width: "300px", display: "block" }}
       />
       <button

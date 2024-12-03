@@ -127,7 +127,7 @@ function toBytes32(value) {
   return '0x' + Array.from(bytes32).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function verifyCredential(credentialId, userAddress) {
+async function verifyCredential(credentialId, userAddress, issuer) {
   try {
     // Fetch credential from blockchain
     const credentialIdBytes32 = toBytes32(credentialId);
@@ -142,11 +142,19 @@ async function verifyCredential(credentialId, userAddress) {
       return { valid: false, message: "Credential ownership mismatch" };
     }
 
-    // Validate the issuer
-    const isCertifiedIssuer = await contract.methods.isCertifiedIssuer(credential.issuer).call();
-    if (!isCertifiedIssuer) {
-      return { valid: false, message: "Issuer is not authorized" };
+    // Validate issuer
+    if (credential.issuer.toLowerCase() !== issuer.toLowerCase()) {
+      return { valid: false, message: "Credential issuer mismatch" };
     }
+    // Validate the issuer
+
+    // TODO: We can improve this feature by add isCertifiedIssuer logic into solidity
+    // but this implementation can be too complex for now
+
+    // const isCertifiedIssuer = await contract.methods.isCertifiedIssuer(credential.issuer).call();
+    // if (!isCertifiedIssuer) {
+    //   return { valid: false, message: "Issuer is not authorized" };
+    // }
 
     // Validate expiry (if applicable)
     const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -162,13 +170,13 @@ async function verifyCredential(credentialId, userAddress) {
 }
 
 app.post("/verify-credential", async (req, res) => {
-  const { credentialId, userAddress } = req.body;
+  const { credentialId, userAddress, issuer } = req.body;
 
-  if (!credentialId || !userAddress) {
-    return res.status(400).json({ valid: false, message: "Credential ID and user address are required" });
+  if (!credentialId || !userAddress || ! issuer) {
+    return res.status(400).json({ valid: false, message: "Credential ID, user address and info are required" });
   }
 
-  const result = await verifyCredential(credentialId, userAddress);
+  const result = await verifyCredential(credentialId, userAddress, issuer);
   return res.status(result.valid ? 200 : 400).json(result);
 });
 
