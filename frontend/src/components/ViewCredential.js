@@ -5,8 +5,7 @@ function ViewCredential() {
   const { credentialId } = useParams();
   const [credential, setCredential] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [verificationResult, setVerificationResult] = useState(null);
-  const [verifying, setVerifying] = useState(false);
+
 
   // Fetch credential details
   useEffect(() => {
