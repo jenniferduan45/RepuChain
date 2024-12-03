@@ -102,11 +102,9 @@ function App() {
         <Route
           path="/issue-credential"
           element={
-            account ? (
+
               <IssueCredential account={account} />
-            ) : (
-              <Navigate to="/" />
-            )
+
           }
         />
         <Route

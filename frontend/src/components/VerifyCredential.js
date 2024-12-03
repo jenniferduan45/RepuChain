@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-
+import { useNavigate } from 'react-router-dom';
 const VerifyCredential = () => {
   const [credentialId, setCredentialId] = useState("");
   const [userAddress, setUserAddress] = useState("");
   const [issuer, setIssuer] = useState("");
   const [log, setLog] = useState("");
-
+  const navigate = useNavigate();
+  const handleBackToHome = () => {
+    navigate('/');
+  };
   const handleVerify = async () => {
     // Clear the log
     setLog("");
@@ -43,52 +46,46 @@ const VerifyCredential = () => {
   };
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-      <h1>Verify Credential</h1>
-      <input
-        type="text"
-        placeholder="Enter Credential ID"
-        value={credentialId}
-        onChange={(e) => setCredentialId(e.target.value)}
-        style={{ marginBottom: "10px", padding: "8px", width: "300px", display: "block" }}
-      />
-      <input
-        type="text"
-        placeholder="Enter User Address"
-        value={userAddress}
-        onChange={(e) => setUserAddress(e.target.value)}
-        style={{ marginBottom: "10px", padding: "8px", width: "300px", display: "block" }}
-      />
-      <input
-        type="text"
-        placeholder="Enter Issuer Address"
-        value={userAddress}
-        onChange={(e) => setIssuer(e.target.value)}
-        style={{ marginBottom: "10px", padding: "8px", width: "300px", display: "block" }}
-      />
-      <button
-        onClick={handleVerify}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Verify
-      </button>
+    <div className="profile-container">
+      <h2>Verify Credential</h2>
+      <form onSubmit={(e) => e.preventDefault()} className="profile-edit-form">
+        <div className="form-group">
+          <label>Credential ID:</label>
+          <input
+            type="text"
+            value={credentialId}
+            onChange={(e) => setCredentialId(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>User Wallet Address:</label>
+          <input
+            type="text"
+            value={userAddress}
+            onChange={(e) => setUserAddress(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Issuer Address:</label>
+          <input
+            type="text"
+            value={issuer}
+            onChange={(e) => setIssuer(e.target.value)}
+          />
+        </div>
+        <div className="button-group">
+          
+          <button onClick={handleVerify} className="save-button">
+            Verify Credential
+          </button>
+          <button onClick={handleBackToHome} className="cancel-button">Back To Home</button>
+        </div>
+      </form>
       <div
         id="log"
-        style={{
-          marginTop: "20px",
-          padding: "10px",
-          border: "1px solid #ccc",
-          backgroundColor: "#f9f9f9",
-          height: "150px",
-          overflowY: "scroll",
-          fontSize: "14px",
-        }}
+        className="log-container"
       >
         {log}
       </div>
