@@ -27,28 +27,6 @@ function ViewCredential() {
       });
   }, [credentialId]);
 
-  // Verify transaction function
-  async function verifyTransaction(txHash) {
-    setVerifying(true);
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/verify-transaction`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ txHash }),
-      });
-
-      const data = await response.json();
-      setVerificationResult(data.success ? "Valid Transaction" : "Invalid Transaction");
-    } catch (error) {
-      console.error("Error verifying transaction:", error);
-      setVerificationResult("Verification failed");
-    } finally {
-      setVerifying(false);
-    }
-  }
-
   if (loading) {
     return <div>Loading...</div>;
   }
