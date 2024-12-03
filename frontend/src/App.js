@@ -8,6 +8,7 @@ import IssueCredential from './components/IssueCredential';
 import CredentialsList from './components/CredentialsList';
 import ViewCredential from './components/ViewCredential';
 import ViewAllCredentials from './components/ViewAllCredentials'; // Import the new component
+import VerifyCredential from './components/VerifyCredential';
 
 function App() {
   const [account, setAccount] = useState(null);
@@ -118,6 +119,10 @@ function App() {
         <Route
           path="/share/all/:address"
           element={<ViewAllCredentials />}
+        />
+        <Route
+          path="/verify"
+          element={<VerifyCredential />}
         />
       </Routes>
     </div>

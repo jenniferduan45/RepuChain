@@ -15,7 +15,7 @@ const PORT = 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 const BLOCKCHAIN_PROVIDER = process.env.BLOCKCHAIN_PROVIDER || 'http://127.0.0.1:7545';
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xcF9Dd21B71587742E64a2D6fA6b60d2B89c06326';
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0x5C64bbeB2dDB1391696FAE54ae6F89cf4eB114c2';
 
 // Create and initialize Web3 instance directly with the provider URL
 const web3 = new Web3(BLOCKCHAIN_PROVIDER);
@@ -109,6 +109,74 @@ app.post('/auth/login', async (req, res) => {
     console.error('Error during authentication:', error);
     return res.status(500).json({ error: 'Authentication failed.' });
   }
+});
+function toBytes32(value) {
+  const utf8Encoder = new TextEncoder(); // Built-in encoder for UTF-8
+  const bytes = utf8Encoder.encode(value); // Convert string to UTF-8 byte array
+
+  if (bytes.length > 32) {
+    throw new Error("String too long for bytes32");
+  }
+
+  // Create a 32-byte array and copy the UTF-8 bytes into it
+  const bytes32 = new Uint8Array(32);
+  bytes32.set(bytes); // Copy the string bytes into the beginning of the array
+
+  // Convert to hexadecimal format prefixed with '0x'
+  return '0x' + Array.from(bytes32).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyCredential(credentialId, userAddress, issuer) {
+  try {
+    // Fetch credential from blockchain
+    const credentialIdBytes32 = toBytes32(credentialId);
+    const credential = await contract.methods.credentials(credentialIdBytes32).call();
+
+    if (!credential) {
+      return { valid: false, message: "Credential does not exist" };
+    }
+
+    // Validate ownership
+    if (credential.owner.toLowerCase() !== userAddress.toLowerCase()) {
+      return { valid: false, message: "Credential ownership mismatch" };
+    }
+
+    // Validate issuer
+    if (credential.issuer.toLowerCase() !== issuer.toLowerCase()) {
+      return { valid: false, message: "Credential issuer mismatch" };
+    }
+    // Validate the issuer
+
+    // TODO: We can improve this feature by add isCertifiedIssuer logic into solidity
+    // but this implementation can be too complex for now
+
+    // const isCertifiedIssuer = await contract.methods.isCertifiedIssuer(credential.issuer).call();
+    // if (!isCertifiedIssuer) {
+    //   return { valid: false, message: "Issuer is not authorized" };
+    // }
+
+    // Validate expiry (if applicable)
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (parseInt(credential.expiryDate, 10) < currentTimestamp) {
+      return { valid: false, message: "Credential has expired" };
+    }
+
+    return { valid: true, message: "Credential is valid" };
+  } catch (error) {
+    console.error("Error verifying credential:", error);
+    return { valid: false, message: "Error during credential verification" };
+  }
+}
+
+app.post("/verify-credential", async (req, res) => {
+  const { credentialId, userAddress, issuer } = req.body;
+
+  if (!credentialId || !userAddress || ! issuer) {
+    return res.status(400).json({ valid: false, message: "Credential ID, user address and info are required" });
+  }
+
+  const result = await verifyCredential(credentialId, userAddress, issuer);
+  return res.status(result.valid ? 200 : 400).json(result);
 });
 
 // GET /user/profile - Get user profile

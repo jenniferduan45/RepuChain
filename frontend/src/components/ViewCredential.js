@@ -6,8 +6,9 @@ function ViewCredential() {
   const [credential, setCredential] = useState(null);
   const [loading, setLoading] = useState(true);
 
+
+  // Fetch credential details
   useEffect(() => {
-    // Fetch the credential details using the shared link
     fetch(`${process.env.REACT_APP_API_URL}/share/credential/${credentialId}`)
       .then((response) => {
         if (!response.ok) {
