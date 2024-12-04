@@ -76,6 +76,7 @@ function ViewAllCredentials() {
           <div key={index} className="credential">
             <p><strong>Type:</strong> {credential.credentialType}</p>
             <p><strong>Description:</strong> {credential.description}</p>
+            <p><strong>Credential ID:</strong> {credential.credentialId}</p>
             <p><strong>Owner:</strong> {credential.owner}</p>
             <p><strong>Issuer:</strong> {credential.issuer}</p>
             <p><strong>Date Issued:</strong> {credential.issueDate}</p>

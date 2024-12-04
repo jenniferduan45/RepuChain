@@ -235,7 +235,7 @@ app.get('/credentials', authenticateToken, async (req, res) => {
         issuer: credential.issuer,
         credentialType: credential.credentialType,
         description: credential.description,
-        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString('en-US', {timeZone: 'America/New_York'}),
       };
     }));
 
@@ -248,7 +248,7 @@ app.get('/credentials', authenticateToken, async (req, res) => {
         issuer: credential.issuer,
         credentialType: credential.credentialType,
         description: credential.description,
-        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString('en-US', {timeZone: 'America/New_York'}),
       };
     }));
 
@@ -342,7 +342,7 @@ app.get('/share/credential/:credentialId', async (req, res) => {
       issuer: credential.issuer,
       credentialType: credential.credentialType,
       description: credential.description,
-      issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+      issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString('en-US', {timeZone: 'America/New_York'}),
     };
 
     return res.json(formattedCredential);
@@ -365,12 +365,12 @@ app.get('/share/all/:address', async (req, res) => {
     const receivedCredentials = await Promise.all(receivedCredentialIds.map(async (credentialId) => {
       const credential = await getCredentialById(credentialId);
       return {
-        credentialId,
+        credentialId: credentialId,
         owner: credential.owner,
         issuer: credential.issuer,
         credentialType: credential.credentialType,
         description: credential.description,
-        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString('en-US', {timeZone: 'America/New_York'}),
       };
     }));
 
@@ -378,12 +378,12 @@ app.get('/share/all/:address', async (req, res) => {
     const issuedCredentials = await Promise.all(issuedCredentialIds.map(async (credentialId) => {
       const credential = await getCredentialById(credentialId);
       return {
-        credentialId,
+        credentialId: credentialId,
         owner: credential.owner,
         issuer: credential.issuer,
         credentialType: credential.credentialType,
         description: credential.description,
-        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString(),
+        issueDate: new Date(parseInt(credential.issueDate) * 1000).toLocaleString('en-US', {timeZone: 'America/New_York'}),
       };
     }));
 
