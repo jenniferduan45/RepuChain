@@ -44,11 +44,16 @@ function CredentialsList() {
         },
       });
       const data = await response.json();
-      // Save the share link and QR code data in state
+
+      if (!data.shareLink) {
+        throw new Error('Share link not received from server');
+      }
+
+      // Save the share link in state
       setShareLinks((prev) => ({ ...prev, [credentialId]: data.shareLink }));
-      setQrCodeData((prev) => ({ ...prev, [credentialId]: data.qrCodeUrl }));
+      setQrCodeData((prev) => ({ ...prev, [credentialId]: data.shareLink })); // Use shareLink for QR code
     } catch (error) {
-      console.error('Error generating QR code:', error);
+      console.error('Error generating share link:', error);
     }
   };
 
@@ -62,11 +67,16 @@ function CredentialsList() {
         },
       });
       const data = await response.json();
-      // Save the share link and QR code data in state
+
+      if (!data.shareLink) {
+        throw new Error('Share link not received from server');
+      }
+
+      // Save the share link in state
       setShareLinks((prev) => ({ ...prev, all: data.shareLink }));
-      setQrCodeData((prev) => ({ ...prev, all: data.qrCodeUrl }));
+      setQrCodeData((prev) => ({ ...prev, all: data.shareLink })); // Use shareLink for QR code
     } catch (error) {
-      console.error('Error generating QR code for all credentials:', error);
+      console.error('Error generating share link for all credentials:', error);
     }
   };
 
@@ -97,34 +107,73 @@ function CredentialsList() {
 
           {qrCodeData.all && (
             <div className="qr-code">
-              <QRCodeCanvas value={qrCodeData.all} />
+              <QRCodeCanvas value={qrCodeData.all} size={256} level="H" includeMargin={true} />
               <p>
-                Share link: <a href={shareLinks.all} target="_blank" rel="noopener noreferrer">{shareLinks.all}</a>
+                Share link:{' '}
+                <a href={shareLinks.all} target="_blank" rel="noopener noreferrer">
+                  {shareLinks.all}
+                </a>
               </p>
             </div>
           )}
 
           {/* Filter Options */}
           <div className="filter-options">
-            <button onClick={() => setFilter('all')} className={`filter-button ${filter === 'all' ? 'active' : ''}`}>All</button>
-            <button onClick={() => setFilter('received')} className={`filter-button ${filter === 'received' ? 'active' : ''}`}>Received</button>
-            <button onClick={() => setFilter('issued')} className={`filter-button ${filter === 'issued' ? 'active' : ''}`}>Issued</button>
+            <button
+              onClick={() => setFilter('all')}
+              className={`filter-button ${filter === 'all' ? 'active' : ''}`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilter('received')}
+              className={`filter-button ${filter === 'received' ? 'active' : ''}`}
+            >
+              Received
+            </button>
+            <button
+              onClick={() => setFilter('issued')}
+              className={`filter-button ${filter === 'issued' ? 'active' : ''}`}
+            >
+              Issued
+            </button>
           </div>
 
           <div className="credentials-list">
             {filteredCredentials().map((credential) => (
               <div key={credential.credentialId} className="credential">
-                <p><strong>Type:</strong> {credential.credentialType}</p>
-                <p><strong>Description:</strong> {credential.description}</p>
-                <p><strong>Date Issued:</strong> {credential.issueDate}</p>
-                <button onClick={() => handleGenerateQrCode(credential.credentialId)} className="edit-button">
+                <p>
+                  <strong>Type:</strong> {credential.credentialType}
+                </p>
+                <p>
+                  <strong>Description:</strong> {credential.description}
+                </p>
+                <p>
+                  <strong>Date Issued:</strong> {credential.issueDate}
+                </p>
+                <button
+                  onClick={() => handleGenerateQrCode(credential.credentialId)}
+                  className="edit-button"
+                >
                   Generate QR Code
                 </button>
                 {qrCodeData[credential.credentialId] && (
                   <div className="qr-code">
-                    <QRCodeCanvas value={qrCodeData[credential.credentialId]} />
+                    <QRCodeCanvas
+                      value={qrCodeData[credential.credentialId]}
+                      size={256}
+                      level="H"
+                      includeMargin={true}
+                    />
                     <p>
-                      Share link: <a href={shareLinks[credential.credentialId]} target="_blank" rel="noopener noreferrer">{shareLinks[credential.credentialId]}</a>
+                      Share link:{' '}
+                      <a
+                        href={shareLinks[credential.credentialId]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {shareLinks[credential.credentialId]}
+                      </a>
                     </p>
                   </div>
                 )}
@@ -138,4 +187,3 @@ function CredentialsList() {
 }
 
 export default CredentialsList;
-
