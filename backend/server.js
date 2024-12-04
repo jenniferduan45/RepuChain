@@ -264,16 +264,20 @@ app.get('/credentials', authenticateToken, async (req, res) => {
 
 const TinyURL = require('tinyurl');
 
-// GET /credentials/:credentialId/share - Generate QR Code for a specific credential
+// GET /credentials/:credentialId/share - Generate share link for a specific credential
 app.get('/credentials/:credentialId/share', authenticateToken, async (req, res) => {
   const { credentialId } = req.params;
   const { address } = req.user;
 
   try {
-    // Get credential from blockchain to verify ownership or issuing rights
+    // Verify ownership or issuing rights
     const credential = await getCredentialById(credentialId);
 
-    if (!credential || (credential.owner.toLowerCase() !== address.toLowerCase() && credential.issuer.toLowerCase() !== address.toLowerCase())) {
+    if (
+      !credential ||
+      (credential.owner.toLowerCase() !== address.toLowerCase() &&
+        credential.issuer.toLowerCase() !== address.toLowerCase())
+    ) {
       return res.status(403).json({ error: 'You do not have permission to share this credential' });
     }
 
@@ -281,42 +285,43 @@ app.get('/credentials/:credentialId/share', authenticateToken, async (req, res) 
     const originalShareLink = `${FRONTEND_BASE_URL}/share/credential/${credentialId}`;
 
     // Shorten the link
-    TinyURL.shorten(originalShareLink, function (shortenedLink) {
-      if (!shortenedLink) {
+    TinyURL.shorten(originalShareLink, function (shortenedLink, err) {
+      if (err || !shortenedLink) {
         return res.status(500).json({ error: 'Failed to generate short URL' });
       }
 
-      // Generate QR code from shortened link
-      QRCode.toDataURL(shortenedLink, (err, qrCodeUrl) => {
-        if (err) {
-          console.error('Error generating QR code:', err);
-          return res.status(500).json({ error: 'Failed to generate QR code' });
-        }
-
-        return res.json({ shareLink: shortenedLink, qrCodeUrl });
-      });
+      // Return the shortened link to the client
+      return res.json({ shareLink: shortenedLink });
     });
   } catch (error) {
-    console.error('Error generating QR code:', error);
-    return res.status(500).json({ error: 'Failed to generate QR code' });
+    console.error('Error generating share link:', error);
+    return res.status(500).json({ error: 'Failed to generate share link' });
   }
 });
 
-// GET /credentials/shareAll - Generate QR Code for all credentials of a user
+// GET /credentials/shareAll - Generate share link for all credentials of a user
 app.get('/credentials/shareAll', authenticateToken, async (req, res) => {
   const { address } = req.user;
 
   try {
     // Create a shareable link for all credentials of the user
-    const shareLink = `${FRONTEND_BASE_URL}/share/all/${address}`;
-    const qrCodeUrl = await QRCode.toDataURL(shareLink);
+    const originalShareLink = `${FRONTEND_BASE_URL}/share/all/${address}`;
 
-    return res.json({ shareLink, qrCodeUrl });
+    // Shorten the link
+    TinyURL.shorten(originalShareLink, function (shortenedLink, err) {
+      if (err || !shortenedLink) {
+        return res.status(500).json({ error: 'Failed to generate short URL' });
+      }
+
+      // Return the shortened link to the client
+      return res.json({ shareLink: shortenedLink });
+    });
   } catch (error) {
-    console.error('Error generating QR code for all credentials:', error);
-    return res.status(500).json({ error: 'Failed to generate QR code for all credentials' });
+    console.error('Error generating share link for all credentials:', error);
+    return res.status(500).json({ error: 'Failed to generate share link for all credentials' });
   }
 });
+
 
 // GET /share/credential/:credentialId - Serve credential details for a shared link
 app.get('/share/credential/:credentialId', async (req, res) => {
