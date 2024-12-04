@@ -71,7 +71,7 @@ function App() {
               <div className="home-container">
                 <div className="title">
                   <h1>Welcome to RepuChain</h1>
-                  <p>Blockchain Verified Credentials You Can Trust</p>
+                  <p>Blockchain-Verified Credentials You Can Trust</p>
                 </div>
                 <button onClick={navigateToIssueCredential} className="home-button">
                   Issue Credential
