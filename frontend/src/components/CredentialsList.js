@@ -121,19 +121,19 @@ function CredentialsList() {
           <div className="filter-options">
             <button
               onClick={() => setFilter('all')}
-              className={`filter-button ${filter === 'all' ? 'active' : ''}`}
+              className={`filter-button-${filter === 'all' ? 'active' : ''}`}
             >
               All
             </button>
             <button
               onClick={() => setFilter('received')}
-              className={`filter-button ${filter === 'received' ? 'active' : ''}`}
+              className={`filter-button-${filter === 'received' ? 'active' : ''}`}
             >
               Received
             </button>
             <button
               onClick={() => setFilter('issued')}
-              className={`filter-button ${filter === 'issued' ? 'active' : ''}`}
+              className={`filter-button-${filter === 'issued' ? 'active' : ''}`}
             >
               Issued
             </button>
@@ -142,18 +142,12 @@ function CredentialsList() {
           <div className="credentials-list">
             {filteredCredentials().map((credential) => (
               <div key={credential.credentialId} className="credential">
-                <p>
-                  <strong>Type:</strong> {credential.credentialType}
-                </p>
-                <p>
-                  <strong>Description:</strong> {credential.description}
-                </p>
-                <p>
-                  <strong>Date Issued:</strong> {credential.issueDate}
-                </p>
+                <p><strong>Type:</strong> {credential.credentialType}</p>
+                <p><strong>Description:</strong> {credential.description}</p>
+                <p><strong>Date Issued:</strong> {credential.issueDate}</p>
                 <button
                   onClick={() => handleGenerateQrCode(credential.credentialId)}
-                  className="edit-button"
+                  className="save-button"
                 >
                   Generate QR Code
                 </button>
