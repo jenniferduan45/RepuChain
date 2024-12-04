@@ -1,6 +1,9 @@
 # RepuChain
 RepuChain is a blockchain-based platform where institutions can issue verifiable credentials. Addressing the challenges of current credential systems, it provides a secure and efficient way for credential issuance, management, and verification, giving users control over their own records.
 
+## Architecture Design
+![](architecture.png)
+
 ## Project Structure
 ```
 RepuChain/
