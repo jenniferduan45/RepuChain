@@ -39,10 +39,11 @@ function ViewCredential() {
       <h2>Credential Details</h2>
       <div className="credentials-list">
         <div className="credential">
-          <p><strong>Owner:</strong> {credential.owner}</p>
-          <p><strong>Issuer:</strong> {credential.issuer}</p>
           <p><strong>Type:</strong> {credential.credentialType}</p>
           <p><strong>Description:</strong> {credential.description}</p>
+          <p><strong>Credential ID:</strong> {credentialId}</p>
+          <p><strong>Owner:</strong> {credential.owner}</p>
+          <p><strong>Issuer:</strong> {credential.issuer}</p>
           <p><strong>Date Issued:</strong> {credential.issueDate}</p>
         </div>
       </div>
