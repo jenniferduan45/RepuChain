@@ -98,7 +98,7 @@ function CredentialsList() {
         <p>Loading credentials...</p>
       ) : (
         <>
-          <button onClick={handleGenerateAllQrCode} className="edit-button">
+          <button onClick={handleGenerateAllQrCode} className="save-button">
             Generate QR Code for All Credentials
           </button>
           <button onClick={handleBackToHome} className="cancel-button">

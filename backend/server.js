@@ -15,7 +15,7 @@ const PORT = 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL || 'http://localhost:3000';
 const BLOCKCHAIN_PROVIDER = process.env.BLOCKCHAIN_PROVIDER || 'http://127.0.0.1:7545';
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xE7a27fD9e2d542228022e89F9A0e035473eeDFf6';
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || '0xcF9Dd21B71587742E64a2D6fA6b60d2B89c06326';
 
 // Create and initialize Web3 instance directly with the provider URL
 const web3 = new Web3(BLOCKCHAIN_PROVIDER);
@@ -109,6 +109,49 @@ app.post('/auth/login', async (req, res) => {
     console.error('Error during authentication:', error);
     return res.status(500).json({ error: 'Authentication failed.' });
   }
+});
+
+async function verifyCredential(credentialId, userAddress, issuer) {
+  try {
+    // Fetch credential from blockchain
+    const credential = await contract.methods.credentials(credentialId).call();
+
+    if (!credential) {
+      return { valid: false, message: "Credential does not exist" };
+    }
+
+    // Validate ownership
+    if (credential.owner.toLowerCase() !== userAddress.toLowerCase()) {
+      return { valid: false, message: "Credential ownership mismatch" };
+    }
+
+    // Validate issuer
+    if (credential.issuer.toLowerCase() !== issuer.toLowerCase()) {
+      return { valid: false, message: "Credential issuer mismatch" };
+    }
+
+    // Validate expiry (if applicable)
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (parseInt(credential.expiryDate, 10) < currentTimestamp) {
+      return { valid: false, message: "Credential has expired" };
+    }
+
+    return { valid: true, message: "Credential is valid" };
+  } catch (error) {
+    console.error("Error verifying credential:", error);
+    return { valid: false, message: "Error during credential verification" };
+  }
+}
+
+app.post("/verify-credential", async (req, res) => {
+  const { credentialId, userAddress, issuer } = req.body;
+
+  if (!credentialId || !userAddress || ! issuer) {
+    return res.status(400).json({ valid: false, message: "Credential ID, user address and info are required" });
+  }
+
+  const result = await verifyCredential(credentialId, userAddress, issuer);
+  return res.status(result.valid ? 200 : 400).json(result);
 });
 
 // GET /user/profile - Get user profile

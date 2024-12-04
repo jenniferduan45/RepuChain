@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RepuChainJSON from '../contracts/RepuChain.json';
 
 const contractABI = RepuChainJSON.abi;
-const contractAddress = '0xE7a27fD9e2d542228022e89F9A0e035473eeDFf6'; // Deployed contract address
+const contractAddress = '0xcF9Dd21B71587742E64a2D6fA6b60d2B89c06326'; // Deployed contract address
 
 function IssueCredential({ account }) {
   const [owner, setOwner] = useState('');
@@ -81,7 +81,7 @@ function IssueCredential({ account }) {
           />
         </div>
         <div className="button-group">
-          <button onClick={handleSubmit} className="save-button">Issue Credential</button>
+          <button type="submit" className="save-button">Issue Credential</button>
           <button onClick={handleBackToHome} className="cancel-button">Back To Home</button>
         </div>
       </form>

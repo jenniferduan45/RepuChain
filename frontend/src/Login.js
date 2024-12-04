@@ -29,7 +29,6 @@ function Login({ onLoginSuccess }) {
         <div className="navbar-brand">RepuChain</div>
         <div className="navbar-links">
           <a href="#features">Features</a>
-          <a href="#contact">Contact Us</a>
         </div>
       </nav>
 
@@ -46,7 +45,6 @@ function Login({ onLoginSuccess }) {
       <section className="image-section">
         <div className="image-wrapper">
           <img src="https://media.licdn.com/dms/image/v2/D5612AQFAEglCaIxCqQ/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1685615266046?e=1738195200&v=beta&t=bNfXtIFMUtffd1I65uynodEZiMPFe27Tqf6SaEM6QnE" alt="Blockchain Illustration" className="hero-to-features-image" />
-          <p className="image-caption">The future of trusted credentials starts with blockchain.</p>
         </div>
       </section>
 
